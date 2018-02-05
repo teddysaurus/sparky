@@ -12,20 +12,32 @@ include <fasteners.scad>
 37d_gearbox_l = 22;
 37d_body_d = 34.5;
 37d_full_l = 68;
-37d_bolt_orbit_d = 31;
-37d_axle_d = 12.2;
-37d_axle_offset = 7;
-37d_motor_base_w = 40;
+37d_bolt_orbit_d = 31;  // diameter of the circle described by the M3 screw hols
+37d_axle_d = 12.2;      // diameter of the axle bearing housing
+37d_axle_offset = 7;    // distance from the center of the gearbox cylinder to the center of the axle bearing housing
+37d_motor_base_w = 40;  // dimensions for the motor base mount housing
 37d_motor_base_h = 20;
-37d_bracket_width = 4;
+37d_bracket_width = 4;  // width of the bracket that mates with the face of the motor
 //$fn = 100;
-//37d_motor_base();
+//37d_motor_base();     // uncomment this to build the motor mount alone
+
+/* Describes the motor as two cylinders                     */
+/* the fatter cylinder is the gearbox, the other is the main*/
+/* motor body.                                              */
+/* cylinder is oriented face down, centered on the origin   */
+/* with the body upright in positive space.                 */
 
 module 37d_body()
 {
     cylinder( d = 37d_gearbox_d, h = 37d_gearbox_l);
     cylinder( d = 37d_body_d, h = 37d_full_l);
 }
+
+/* Describes the holes (cutouts) needed to mount the motor  */
+/* to a bracket with the M3 screw holes.                    */
+/* Use the same translate() arguments used for the body     */
+/* and difference() with the bracket to remove the screw    */
+/* cylinders.                                               */
 
 module 37d_cutout(d = 3.2, h = 5)
 {
@@ -39,10 +51,9 @@ module 37d_cutout(d = 3.2, h = 5)
         }
 }    
 
-// Build a 37D motor mount
-// d is the diameter of the screw holes
-// ideally should be larger than the screw/bolt size
-// width of bracket
+/* Build a 37D motor mount                                  */
+/* d is the diameter of the screw holes for the tension     */
+/* strap. Ideally should be larger than the screw/bolt size.*/
 
 module 37d_motor_base(d = 3.2)   
 {  
