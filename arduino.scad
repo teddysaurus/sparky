@@ -1,4 +1,4 @@
-/* 37D Motor module                                         */
+/* Arduino dimensions module                                         */
 /* include <arduino.scad>                                   */
 /* dimensions for arduino mounting holes                    */
 /* modules to draw mounting holes                           */

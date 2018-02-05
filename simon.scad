@@ -1,3 +1,6 @@
+contact_tolerance = 0.15;   // distance to allow parts to fit together.
+
+
 module pie_slice(d=3.0,a=30, h= 3.85) {
   intersection() {
     cylinder(d=d, h = h);

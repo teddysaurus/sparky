@@ -1,4 +1,9 @@
-//$fn = 101; //x
+/* Main sparky robot design file                            */
+/*                                                          */
+/* Version 1.0: Created Simon Jensen-Fellows    01.31.2018  */
+/* Version 1.1: Modified Simon Jensen-Fellows   02.05.2018  */
+/*              improved configurability of ir cutouts      */
+
 include <simon.scad>
 include <standoff.scad>
 include <37d.scad>
@@ -146,7 +151,7 @@ module base_only(){
                 base_holes();
             }
             
-        ir_cutouts();        
+        ir_cutouts( inset = 20, a = 90);        
     }
     
     base_standoffs();
@@ -238,10 +243,14 @@ module base_holes()
         }
 }    
 
-module ir_cutouts(){
-for(i = [30:60:330])
-        rotate([0,0,i]) translate([0,base_radius - base_wall-15,0]){
-            base_cutout();
+/*  i = inset                            */
+/*  a = angle of orientation            */
+/*  p = vector of angles (locations)    */
+
+module ir_cutouts(inset = 15, a = 0, p=[20,-20,200,160]){
+for(i = [0:len(p)-1])
+        rotate([0,0,p[i]]) translate([0,base_radius - base_wall-inset,0]){
+            rotate( a = a) base_cutout();
         }
 }
 
@@ -250,10 +259,10 @@ module base_cutout(h = base_wall){
     
     translate([0,0,0]){
         hull(){
-            translate([15,0,0]) cylinder( d = 10.1, h = h/2, center = true);
-            translate([-15,0,0]) cylinder( d = 10.1, h = h/2, center = true);
+            translate([15,0,0]) cylinder( d = 10 + contact_tolerance, h = h/2, center = true);
+            translate([-15,0,0]) cylinder( d = 10 + contact_tolerance, h = h/2, center = true);
         }
-        translate([0,0,h/2]) cube([20.1,10.1,h], center = true);
+        translate([0,0,h/2]) cube([20 + contact_tolerance,10 + contact_tolerance,h], center = true);
         translate([15,0,h/2]) cylinder( d = M3_grip_d, h = h, center = true);
         translate([-15,0,h/2]) cylinder( d = M3_grip_d, h = h, center = true);
     }
