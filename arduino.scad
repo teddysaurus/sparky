@@ -6,7 +6,7 @@
 /* Version 1.0: Created Simon Jensen-Fellows    01.31.2018  */
 
 include <standoff.scad>
-include <fasterners.scad>
+include <fasteners.scad>
 
 /*  Arduino dimensions    uno | mega        */ 
 /*  __________________________|_________    */
