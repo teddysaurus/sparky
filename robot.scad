@@ -52,10 +52,13 @@ rasbpi_X = 58;
 //basic_lid();
 //arduino_uno_standoffs();
 //arduino_mega_standoffs();
-main_chassis(walls = false);
+//main_chassis(walls = true);
 //expansion_frame();
 //motor_bracket();
 //base_cutout();
+
+//base_insert();
+IR_01_insert();
 
 module  main_chassis_with_uno()
 {
@@ -247,36 +250,56 @@ module base_holes()
 /*  a = angle of orientation            */
 /*  p = vector of angles (locations)    */
 
-module ir_cutouts(inset = 15, a = 0, p=[20,-20,200,160]){
+module ir_cutouts(w = 15, inset = 15, a = 0, p=[20,-20,200,160]){
 for(i = [0:len(p)-1])
         rotate([0,0,p[i]]) translate([0,base_radius - base_wall-inset,0]){
             rotate( a = a) base_cutout();
         }
 }
 
+/*  w = width of insert                 */
 
-module base_cutout(h = base_wall){
-    
-    translate([0,0,0]){
+module base_cutout(w = 15, h = base_wall){
         hull(){
-            translate([15,0,0]) cylinder( d = 10 + contact_tolerance, h = h/2, center = true);
-            translate([-15,0,0]) cylinder( d = 10 + contact_tolerance, h = h/2, center = true);
+            translate([15,0,h/4]) cylinder( d = w + contact_tolerance, h = h/2, center = true);
+            translate([-15,0,h/4]) cylinder( d = w + contact_tolerance, h = h/2, center = true);
         }
-        translate([0,0,h/2]) cube([20 + contact_tolerance,10 + contact_tolerance,h], center = true);
+        translate([0,0,h/2]) cube([20 + contact_tolerance,w + contact_tolerance,h], center = true);
         translate([15,0,h/2]) cylinder( d = M3_grip_d, h = h, center = true);
         translate([-15,0,h/2]) cylinder( d = M3_grip_d, h = h, center = true);
+}
+
+module base_insert(w = 15, h = base_wall){
+    difference(){
+        union(){
+            hull(){
+                translate([15,0,h/4]) cylinder( d = w, h = h/2, center = true);
+                translate([-15,0,h/4]) cylinder( d = w, h = h/2, center = true);
+            }    
+            translate([0,0,h/2]) cube([20,w,h], center = true);
+        }
+        translate([15,0,h/4]) cylinder( d = M3_free_d, h = h/2, center = true);
+        translate([-15,0,h/4]) cylinder( d = M3_free_d, h = h/2, center = true);
     }
 }
 
-module base_insert(h = base_wall){
-    translate([0,0,-h]) difference(){
-        union(){
-            translate([15,0,0]) cylinder( d = 10, h = h/2, center = true);
-            cube([30,10,h/2], center = true);
-            translate([0,0,h/2]) cube([20,10,h], center = true);
-            translate([-15,0,0]) cylinder( d = 10, h = h/2, center = true);
+/*  build an insert for the IR_01       */
+/*  infrared proximity detector         */
+/*  intent is to use this as a cliff    */
+/*  detector.                           */
+
+
+module  IR_01_insert(h = base_wall){
+        difference(){
+            union(){
+                base_insert(w=15, h = h);
+                translate([5.5,0,base_wall + 4]) cube([9,15,8], center = true, color = "blue");
+                translate([0, 0, base_wall]) standoff( h = 8 );
+            }
+            hull(){
+                translate([5.5,0,(8 + base_wall)/2]) cube([6,10,8 + base_wall], center = true);
+                translate([5.5,(7.5/2),0]) cylinder(r1 = (7.5/2), r2 = 3, h = 9, $fn = 50);
+                translate([5.5, -(7.5/2),0]) cylinder(r1 = (7.5/2), r2 = 3, h = 9, $fn = 50);
+            }
         }
-            translate([15,0,0]) cylinder( d = M3_free_d, h = h/2, center = true);
-            translate([-15,0,0]) cylinder( d = M3_free_d, h = h/2, center = true);
-    }
 }
